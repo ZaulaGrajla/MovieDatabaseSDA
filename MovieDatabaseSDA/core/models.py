@@ -2,6 +2,13 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
+class Country(models.Model):
+    name = models.TextField(max_length=30, default='USA')
+
+    def __str__(self):
+        return self.name
+
+
 class Director(models.Model):
     name = models.CharField(max_length=20)
     surname = models.CharField(max_length=30)
@@ -39,6 +46,7 @@ class Movie(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     genre = models.ForeignKey(Genre, null=True, on_delete=models.SET_NULL, blank=True)
     director = models.ForeignKey(Director, null=True, on_delete=models.SET_NULL, blank=True)
+    countries = models.ManyToManyField(Country, 'movies')
 
     class Meta:
         unique_together = ('title', 'released', 'director')
