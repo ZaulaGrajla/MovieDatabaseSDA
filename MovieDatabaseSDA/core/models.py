@@ -10,6 +10,12 @@ class Director(models.Model):
         null=True, validators=[MaxValueValidator(10), MinValueValidator(1)]
     )
 
+    class Meta:
+        unique_together = ('name', 'surname')
+
+    def __str__(self):
+        return self.name + " " + self.surname
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=20, unique=True)
@@ -32,6 +38,10 @@ class Movie(models.Model):
     # null do baz danych a blank do formularzy
     created = models.DateTimeField(auto_now_add=True)
     genre = models.ForeignKey(Genre, null=True, on_delete=models.SET_NULL, blank=True)
+    director = models.ForeignKey(Director, null=True, on_delete=models.SET_NULL, blank=True)
+
+    class Meta:
+        unique_together = ('title', 'released', 'director')
 
     def __str__(self):
         return f"{self.title} from {self.released}"
