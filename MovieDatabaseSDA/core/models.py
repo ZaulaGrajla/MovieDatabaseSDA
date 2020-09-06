@@ -2,6 +2,15 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
+class Director(models.Model):
+    name = models.CharField(max_length=20)
+    surname = models.CharField(max_length=30)
+    birth_date = models.DateField(null=True, blank=True)
+    rating = models.IntegerField(
+        null=True, validators=[MaxValueValidator(10), MinValueValidator(1)]
+    )
+
+
 class Genre(models.Model):
     name = models.CharField(max_length=20, unique=True)
     age_limit = models.IntegerField(
