@@ -1,10 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Welcome to Django training movies</h1>
+    <ul>
+        {% for movie in movies %}
+            <li>
+                {{ movie.title }} from {{ movie.released.year }} directed by {{ movie.director }}<br><br>
+                {% if movie.genre.age_limit == age_limits.kids %}
+                Genre: {{ movie.genre }}<br>
+                Description: {{ movie.description }}<br>
+                Rating by best viewers: {{ movie.rating }}<br>
+                <br>
+                {% else %}
+                Not for kids!<br><br><br>
+                {% endif %}
+            </li>
+
+        {% endfor %}
+
+    </ul>
+{% endblock %}

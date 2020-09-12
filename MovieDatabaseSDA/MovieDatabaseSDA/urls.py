@@ -16,8 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from core.views import hello
+from core.views import welcome
+from core.views import MovieView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hello/', hello),
+    path('welcome/', welcome),
+    path('', MovieView.as_view(), name='index'),
 ]
+
+# path('', MovieView.as_view(), name='index'),
+# path('', movies, name='index'),
