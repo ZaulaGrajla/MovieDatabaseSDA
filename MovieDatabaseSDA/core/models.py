@@ -56,7 +56,7 @@ class Genre(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=70)
     rating = models.IntegerField(
-        null=True, validators=[MaxValueValidator(10), MinValueValidator(1)]
+        null=True, blank=True, validators=[MaxValueValidator(10), MinValueValidator(1)]
     )
     released = models.DateField()
     description = models.TextField(null=True, blank=True)
@@ -69,6 +69,7 @@ class Movie(models.Model):
 
     class Meta:
         unique_together = ('title', 'released', 'director')
+        ordering = ('title',)
 
     def __str__(self):
         return f"{self.title} from {self.released}"
