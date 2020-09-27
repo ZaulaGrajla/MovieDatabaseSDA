@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse
 from django.shortcuts import render
 from django import views
@@ -9,13 +11,16 @@ from core.forms import MovieForm
 import logging
 
 
-# CHECK OUT REVERSE_LAZY AND LOGGER!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 logging.basicConfig(filename='log.txt',
                     filemode='w',
                     level=logging.INFO,
                     )
 LOGGER = logging.getLogger(__name__)
+
+
+class StaffRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
 
 
 # class MovieCreateView(FormView):
@@ -35,7 +40,7 @@ LOGGER = logging.getLogger(__name__)
 #         )
 #         return result
 
-class MovieCreateView(CreateView):
+class MovieCreateView(LoginRequiredMixin, CreateView):
     title = 'Add movie'
     template_name = 'form.html'
     form_class = MovieForm
@@ -51,7 +56,7 @@ class MovieCreateView(CreateView):
         return result
 
 
-class MovieUpdateView(UpdateView):
+class MovieUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'form.html'
     model = Movie
     form_class = MovieForm
@@ -62,10 +67,13 @@ class MovieUpdateView(UpdateView):
         return super().form_invalid(form)
 
 
-class MovieDeleteView(DeleteView):
+class MovieDeleteView(LoginRequiredMixin, StaffRequiredMixin, DeleteView):
     template_name = 'movie_confirm_delete.html'
     model = Movie
     success_url = reverse_lazy('core:movie_list')
+
+    def test_func(self):
+        return super().test_func() and self.request.user.is_superuser
 
 
 def welcome(request):
@@ -118,7 +126,3 @@ class MovieListView(ListView):
 class MovieDetailView(DetailView):
     template_name = 'movie_detail.html'
     model = Movie
-
-
-class IndexView(MovieListView):
-    template_name = 'index.html'

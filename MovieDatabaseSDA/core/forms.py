@@ -1,5 +1,9 @@
 import re
 from datetime import date
+
+from crispy_forms.bootstrap import FormActions, InlineCheckboxes
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Row, Column, Div, MultiField, Button
 from django import forms
 
 from core.models import Genre, Movie
@@ -23,7 +27,6 @@ class PastMonthField(forms.DateField):
 
 
 class MovieForm(forms.ModelForm):
-
     class Meta:
         model = Movie
         fields = "__all__"
@@ -34,6 +37,22 @@ class MovieForm(forms.ModelForm):
     rating = forms.IntegerField(min_value=1, max_value=10)
     released = PastMonthField()
     description = forms.CharField(widget=forms.Textarea, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'title',
+            Row(Column('genre'), Column('rating'), Column('released')),
+            'director',
+            'description',
+            Div('countries', css_id = 'black-fields'),
+            FormActions(
+                Submit('submit', 'Submit'),
+                Button('cancel', 'Cancel')
+            ),
+            InlineCheckboxes('boxoffices')
+        )
 
     def clean_description(self):  # clean_<fieldname>
         initial = self.cleaned_data['description']
