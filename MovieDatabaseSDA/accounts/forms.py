@@ -1,7 +1,9 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserCreationForm
-from django.forms import Form
+from django.forms import Form, Textarea, IntegerField
+
+from accounts.models import Profile
 
 
 class SubmittableForm(Form):
@@ -20,5 +22,14 @@ class SubmittablePasswordChangeForm(SubmittableForm, PasswordChangeForm):
 
 
 class SignUpForm(SubmittableForm, UserCreationForm):
+    shoe_size = IntegerField(min_value=30, max_value=55)
+
     class Meta(UserCreationForm.Meta):
         fields = ['username', 'first_name']
+
+    def save(self, commit=True, *args, **kwargs):
+        user = super().save(commit)
+        shoe_size = self.cleaned_data['shoe_size']
+        profile = Profile(shoe_size=shoe_size, user=user)
+        profile.save()
+        return user

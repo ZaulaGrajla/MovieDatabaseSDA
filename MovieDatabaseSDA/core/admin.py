@@ -6,3 +6,4 @@ admin.site.register(Genre)
 admin.site.register(Director)
 admin.site.register(Country)
 admin.site.register(BoxOffice)
+
