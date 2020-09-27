@@ -1,9 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, PasswordChangeView, LogoutView
-from django.shortcuts import render
-
-from accounts.forms import SubmittableAuthenticationForm, SubmittablePasswordChangeForm
+from accounts.forms import SubmittableAuthenticationForm, SubmittablePasswordChangeForm, SignUpForm
 from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
 
 class SubmittableLoginView(LoginView):
@@ -22,3 +21,9 @@ class SuccessMessagedLogoutView(LogoutView):
         result = super().get_next_page()
         messages.success(self.request, "Successfully logged out")
         return result
+
+
+class SignUpView(CreateView):
+    template_name = 'form.html'
+    form_class = SignUpForm
+    success_url = reverse_lazy('index')
